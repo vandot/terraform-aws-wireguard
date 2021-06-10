@@ -43,7 +43,7 @@ resource "aws_instance" "wireguard" {
   iam_instance_profile        = aws_iam_instance_profile.wireguard_profile.name
   user_data                   = data.template_file.user_data.rendered
   subnet_id                   = var.subnet_ids[0]
-  vpc_security_group_ids      = [aws_security_group.sg_wireguard_external.id]
+  vpc_security_group_ids      = length(compact(var.additional_security_group_ids)) != 0 ? concat([aws_security_group.sg_wireguard_external.id], var.additional_security_group_ids) : [aws_security_group.sg_wireguard_external.id]
   associate_public_ip_address = true
   tags = {
     Name = "wireguard-${var.env}"
